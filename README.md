@@ -11,7 +11,7 @@ Navigavia è un marchio e un gioco di proprietà di Need Games. Questo progetto 
 
 ## Uso
 Apri `index.html` nel browser. Nessuna installazione richiesta.
-https://vampireneko.github.io/.....
+https://vampireneko.github.io/Navigavia-sheet
 
 ## Licenza
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
