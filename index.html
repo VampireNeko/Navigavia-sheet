@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Navigavia — V2 Cartiglio Nautico</title>
+
+  <!-- Font Google: Cinzel Decorative (titolo), Cinzel (label), IM Fell English (corpo) -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<main class="app-shell">
+
+  <!-- ══════════════════════════════════════════════════════════
+       TOPBAR — rosa dei venti, titolo, pulsanti azione
+  ══════════════════════════════════════════════════════════ -->
+  <header class="topbar">
+
+    <!-- Rosa dei venti SVG inline -->
+    <svg class="compass" viewBox="0 0 100 100" aria-hidden="true">
+      <defs>
+        <radialGradient id="compFill" cx=".5" cy=".5">
+          <stop offset="0" stop-color="#f6e8be"/>
+          <stop offset="1" stop-color="#c8a965"/>
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="46" fill="url(#compFill)" stroke="#4a2a08" stroke-width="1.5"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#4a2a08" stroke-width=".5" stroke-dasharray="1 2"/>
+      <!-- frecce cardinali -->
+      <polygon points="50,8 54,50 50,52 46,50" fill="#2a1a08"/>
+      <polygon points="50,92 54,50 50,48 46,50" fill="#80622d"/>
+      <polygon points="8,50 50,46 52,50 50,54" fill="#80622d"/>
+      <polygon points="92,50 50,46 48,50 50,54" fill="#80622d"/>
+      <!-- frecce secondarie (diagonali) -->
+      <polygon points="50,8 51,50 50,51 49,50"    fill="#f6e8be"/>
+      <polygon points="20,20 50,49 51,50 49,51"   fill="#80622d" opacity=".7"/>
+      <polygon points="80,20 50,49 51,50 49,51"   fill="#80622d" opacity=".7"/>
+      <polygon points="20,80 50,49 51,50 49,51"   fill="#80622d" opacity=".7"/>
+      <polygon points="80,80 50,49 51,50 49,51"   fill="#80622d" opacity=".7"/>
+      <!-- centro dorato -->
+      <circle cx="50" cy="50" r="4" fill="#b07a10" stroke="#4a2a08" stroke-width=".8"/>
+      <!-- N -->
+      <text x="50" y="6" text-anchor="middle" font-family="Cinzel, serif" font-size="6" font-weight="700" fill="#2a1a08">N</text>
+    </svg>
+
+    <div class="brand">
+      <h1>Navigavia</h1>
+      <span class="tagline">· scheda del personaggio ·</span>
+    </div>
+
+    <div class="actions">
+      <span class="autosave" id="saveStatus">Pronto</span>
+      <button class="btn primary" id="exportBtn" type="button">Esporta JSON</button>
+      <button class="btn"         id="importBtn" type="button">Importa JSON</button>
+      <!-- spazio visivo tra import e svuota, per evitare click accidentali -->
+      <div style="width:14px;flex-shrink:0;"></div>
+      <button class="btn danger" id="resetBtn" type="button" title="Tieni premuto 5s per svuotare">Svuota</button>
+      <!-- input file nascosto, aperto programmaticamente da importBtn -->
+      <input class="hidden-file" id="importFile" type="file" accept="application/json,.json" />
+    </div>
+
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════
+       GRIGLIA PRINCIPALE — 3 colonne
+  ══════════════════════════════════════════════════════════ -->
+  <section class="sheet" id="sheet">
+
+    <!-- ══ COLONNA 1: Tratti · Abilità · Background ══ -->
+    <div class="column">
+
+      <!-- Tratti (5 valori da 1 a 5) -->
+      <section class="card">
+        <div class="card-inner">
+          <div class="ribbon">Tratti</div>
+          <div class="traits-grid" id="traits">
+            <!-- righe generate da app.js → renderRatings() -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Abilità (16 valori da 0 a 5) -->
+      <section class="card">
+        <div class="card-inner">
+          <div class="ribbon">Abilità</div>
+          <div class="skills-grid" id="skills">
+            <!-- righe generate da app.js → renderRatings() -->
+          </div>
+          <p class="help">
+            <strong>Grado 3:</strong> lancia di nuovo un dado<br>
+            <strong>Grado 4:</strong> somma 15 = 2 Incrementi<br>
+            <strong>Grado 5:</strong> i 10 esplodono
+          </p>
+        </div>
+      </section>
+
+      <!-- Background libero (textarea auto-expand) -->
+      <section class="card long-lines">
+        <div class="card-inner">
+          <div class="ribbon">Background</div>
+          <div class="field">
+            <label for="background">Background</label>
+            <textarea id="background" class="auto-expand" data-path="background"></textarea>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ══ COLONNA 2: Punti Eroe · Spirale · Vantaggi ══ -->
+    <div class="column">
+
+      <!-- Punti Eroe — contatore con + e - -->
+      <section class="card">
+        <div class="card-inner">
+          <div class="ribbon red">Punti Eroe</div>
+          <div class="points-control">
+            <button class="btn small" data-counter="heroPoints" data-delta="-1" type="button">−</button>
+            <div class="points-value" id="heroPointsValue">0</div>
+            <button class="btn small" data-counter="heroPoints" data-delta="1"  type="button">+</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Spirale della Morte — SVG interattiva -->
+      <section class="card">
+        <div class="card-inner">
+          <div class="ribbon skull">Spirale della Morte</div>
+          <div class="spiral-wrapper">
+
+            <!-- SVG: le caselle vengono iniettate da app.js → buildSpiral() -->
+            <svg id="spiralSvg" class="spiral-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+              <g id="spiralCells"></g>
+            </svg>
+
+            <!-- Descrizione delle 4 ferite drammatiche (teschi) -->
+            <div class="spiral-levels">
+              <div class="spiral-level-row" id="fdram-1">
+                <strong>F. Dram. 1</strong><span>+1 Dado Bonus a tutti i Rischi</span>
+              </div>
+              <div class="spiral-level-row" id="fdram-2">
+                <strong>F. Dram. 2</strong><span>Malvagi ottengono +2 Dadi Bonus</span>
+              </div>
+              <div class="spiral-level-row" id="fdram-3">
+                <strong>F. Dram. 3</strong><span>Tutti i 10 esplodono</span>
+              </div>
+              <div class="spiral-level-row" id="fdram-4">
+                <strong>F. Dram. 4</strong><span>Inerme</span>
+              </div>
+            </div>
+
+            <!-- Pulsante azzera spirale (long-press 3s) -->
+            <button class="btn-reset-spiral" id="resetSpiral" type="button"
+                    title="Tieni premuto 3s per azzerare la spirale">
+              ↺ Azzera spirale
+            </button>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Vantaggi — lista dinamica -->
+      <section class="card">
+        <div class="card-inner">
+          <div class="ribbon">Vantaggi</div>
+          <div class="vantaggi-list" id="vantaggiList">
+            <!-- card generate da app.js → renderVantaggi() -->
+          </div>
+          <button class="btn-add-vantaggio" id="addVantaggio" type="button">Aggiungi vantaggio</button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ══ COLONNA 3: Identità · Arcani · Storie ══ -->
+    <div class="column">
+
+      <!-- Identità del personaggio + tracker ricchezza -->
+      <section class="card">
+        <div class="card-inner">
+          <div class="ribbon gold">Identità</div>
+          <div class="field"><label for="player">Giocatore</label><input id="player" data-path="identity.player" /></div>
+          <div class="field"><label for="character">Personaggio</label><input id="character" data-path="identity.character" /></div>
+          <div class="field"><label for="concept">Concetto</label><input id="concept" data-path="identity.concept" /></div>
+          <div class="field"><label for="nation">Nazione</label><input id="nation" data-path="identity.nation" /></div>
+          <div class="field"><label for="faith">Fede</label><input id="faith" data-path="identity.faith" /></div>
+          <div class="ornament">· ✦ ·</div>
+          <p class="help" style="text-align:center;font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;">Ricchezza</p>
+          <div class="coins" id="wealth">
+            <!-- monete generate da app.js → renderWealth() -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Arcani: Virtù e Hubris -->
+      <section class="card">
+        <div class="card-inner">
+          <div class="ribbon">Arcani</div>
+          <div class="arcani">
+            <div class="field">
+              <label for="virtue">Virtù</label>
+              <textarea id="virtue" class="auto-expand" data-path="arcana.virtue"></textarea>
+            </div>
+            <div class="field">
+              <label for="hubris">Hubris</label>
+              <textarea id="hubris" class="auto-expand" data-path="arcana.hubris"></textarea>
+            </div>
+          </div>
+          <p class="help">
+            <strong>Virtù:</strong> 1× per Episodio senza costo, circostanze specifiche.<br>
+            <strong>Hubris:</strong> 1× per Sessione, guadagna 1 Punto Eroe.
+          </p>
+        </div>
+      </section>
+
+      <!-- Storie — lista dinamica -->
+      <section class="card">
+        <div class="card-inner">
+          <div class="ribbon">Storie</div>
+          <div class="storie-list" id="storieList">
+            <!-- card generate da app.js → renderStorie() -->
+          </div>
+          <button class="btn-add-storia" id="addStoria" type="button">Aggiungi storia</button>
+        </div>
+      </section>
+
+    </div>
+
+  </section><!-- /sheet -->
+</main>
+
+<script src="app.js"></script>
+
+
+</body>
+</html>

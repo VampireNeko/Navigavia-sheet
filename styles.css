@@ -1,0 +1,624 @@
+/* ============================================================
+   NAVIGAVIA — Scheda Personaggio
+   styles.css
+   ============================================================ */
+
+/* ── Variabili colore e shadow globali ── */
+:root {
+  --parch:       #ecd9a3;   /* pergamena base */
+  --parch-light: #f6e8be;   /* pergamena chiara */
+  --parch-dark:  #c8a965;   /* pergamena scura */
+  --parch-deep:  #a8843e;   /* pergamena profonda */
+  --ink:         #2a1a08;   /* inchiostro principale */
+  --ink-mid:     #4a3318;   /* inchiostro medio */
+  --muted:       #80622d;   /* testo attenuato / label */
+  --teal:        #0e4d4a;   /* accento teal */
+  --teal-dark:   #062f2c;   /* teal scuro */
+  --red:         #7a1a14;   /* rosso */
+  --red-dark:    #4d0d09;   /* rosso scuro */
+  --wax:         #8a1a14;   /* colore ceralacca */
+  --wax-light:   #b03028;
+  --gold:        #b07a10;   /* oro */
+  --gold-light:  #d4a020;
+  --burn:        #4a2a08;   /* bordi bruciati */
+  --shadow:      0 8px 22px rgba(15,8,2,.5);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; }
+
+/* ── Sfondo: legno scuro con venature e rumore SVG inline ── */
+body {
+  color: var(--ink);
+  background-color: #1a0d04;
+  background-image:
+    radial-gradient(ellipse at 50% 0%,   rgba(95,55,15,.55) 0%, transparent 70%),
+    radial-gradient(ellipse at 50% 100%, rgba(10,5,0,.85)   0%, transparent 60%),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255,200,120,.02) 0 1px,
+      transparent 1px 7px,
+      rgba(0,0,0,.05) 7px 9px,
+      transparent 9px 16px
+    ),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .25 0 0 0 0 .15 0 0 0 0 .05 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 14px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+
+button, input, textarea, select { font: inherit; }
+
+/* ── Contenitore principale sopra il z-index del sfondo ── */
+.app-shell {
+  width: min(1300px, calc(100% - 20px));
+  margin: 0 auto;
+  padding: 14px 0 40px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   TOPBAR — la barra del titolo con rosa dei venti
+   ============================================================ */
+.topbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 18px;
+  align-items: center;
+  padding: 16px 28px;
+  margin-bottom: 18px;
+  background:
+    radial-gradient(ellipse 50% 80% at 12% 50%, rgba(120,70,15,.18) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 70% at 88% 50%, rgba(120,70,15,.18) 0%, transparent 60%),
+    linear-gradient(180deg, var(--parch-light) 0%, var(--parch) 60%, var(--parch-dark) 100%);
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(255,250,220,.6), inset 0 -2px 8px rgba(120,70,15,.2);
+  position: relative;
+  border: 1px solid rgba(74,42,8,.4);
+  border-radius: 4px;
+}
+
+/* Rosa dei venti SVG nella topbar */
+.compass {
+  width: 70px; height: 70px;
+  flex-shrink: 0;
+  opacity: .85;
+}
+
+/* Brand: titolo + tagline */
+.brand { display: flex; flex-direction: column; gap: 2px; }
+.brand h1 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.9rem, 3.6vw, 2.8rem);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  line-height: .95;
+  color: var(--ink);
+  text-shadow: 1px 1px 0 rgba(180,130,20,.4), 2px 2px 0 rgba(80,40,5,.18);
+}
+.brand .tagline {
+  font-family: 'IM Fell English', serif;
+  color: var(--muted);
+  font-size: .78rem;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
+/* Pulsanti della topbar */
+.actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: flex-end; }
+.actions .btn { white-space: nowrap; }
+
+/* ── Stile base del pulsante ── */
+.btn {
+  border: 1px solid rgba(74,42,8,.45);
+  border-radius: 3px;
+  background: linear-gradient(180deg, var(--parch-light), var(--parch-dark));
+  color: var(--ink-mid);
+  padding: 7px 14px;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: .72rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  transition: transform .12s, filter .12s;
+  box-shadow: 0 2px 4px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,250,220,.5);
+}
+.btn:hover { transform: translateY(-1px); filter: brightness(1.06); }
+
+/* variante teal per azioni principali */
+.btn.primary { background: linear-gradient(180deg, #1a6b66, var(--teal-dark)); color: #f0e4c0; border-color: var(--teal-dark); }
+
+/* variante ceralacca per azioni distruttive (svuota) —
+   usa long-press quindi ha la barra di avanzamento ::after */
+.btn.danger {
+  background: radial-gradient(ellipse at 35% 30%, var(--wax-light) 0%, var(--wax) 50%, var(--red-dark) 100%);
+  color: #f5d4c8;
+  border-color: var(--red-dark);
+  border-radius: 50px;
+  position: relative;
+  overflow: hidden;
+  user-select: none;
+  box-shadow: 0 3px 8px rgba(80,8,4,.5), inset 0 1px 0 rgba(255,180,160,.3);
+}
+.btn.danger::after {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  height: 3px; width: var(--reset-progress, 0%);
+  background: rgba(255,200,180,.85);
+}
+.btn.danger.pressing { filter: brightness(1.18); }
+.btn.small { padding: 4px 10px; font-size: .85rem; }
+
+/* Indicatore stato salvataggio */
+.autosave {
+  color: var(--muted);
+  font-family: 'Cinzel', serif;
+  font-size: .68rem;
+  letter-spacing: .12em;
+  min-width: 130px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   GRIGLIA PRINCIPALE — 3 colonne asimmetriche
+   Colonna centrale più larga per spirale e vantaggi
+   ============================================================ */
+.sheet {
+  display: grid;
+  grid-template-columns: 0.92fr 1.16fr 0.92fr;
+  gap: 18px;
+  align-items: start;
+}
+.column { display: grid; gap: 22px; align-items: start; }
+
+/* ============================================================
+   CARD — ogni pannello è una pergamena con cartiglio in cima
+   Il margin-top: 22px serve per lasciare spazio al ribbon
+   che fuoriesce dalla card verso l'alto
+   ============================================================ */
+.card {
+  position: relative;
+  box-shadow: var(--shadow);
+  background-color: var(--parch);
+  background-image:
+    radial-gradient(ellipse 60% 30% at 20% 15%, rgba(160,100,20,.14) 0%, transparent 100%),
+    radial-gradient(ellipse 40% 50% at 85% 80%, rgba(100,60,10,.13)  0%, transparent 100%),
+    radial-gradient(ellipse 70% 20% at 50% 95%, rgba(80,40,5,.10)    0%, transparent 100%),
+    repeating-linear-gradient(0deg, transparent 0 21px, rgba(120,90,40,.05) 21px 22px),
+    linear-gradient(160deg, var(--parch-light) 0%, var(--parch) 50%, var(--parch-dark) 100%);
+  border: 1px solid rgba(74,42,8,.45);
+  border-radius: 3px;
+  margin-top: 22px;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,.35));
+}
+/* vignette bordi bruciati */
+.card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(180deg, rgba(80,40,5,.15) 0%, transparent 5%, transparent 95%, rgba(80,40,5,.15) 100%),
+    linear-gradient(90deg,  rgba(80,40,5,.15) 0%, transparent 4%, transparent 96%, rgba(80,40,5,.15) 100%);
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 3px;
+}
+/* bordo interno dorato sottile */
+.card::after {
+  content: '';
+  position: absolute; inset: 6px;
+  border: 1px solid rgba(180,130,20,.25);
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 1px;
+}
+.card-inner { padding: 28px 22px 18px; position: relative; z-index: 2; }
+
+/* ============================================================
+   RIBBON — il cartiglio srotolato che sovrasta la card
+   Posizionato absolute, esce dal bordo superiore della card
+   ============================================================ */
+.ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  position: absolute;
+  top: -16px; left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: calc(100% - 24px);
+  padding: 9px 30px 10px;
+  white-space: nowrap;
+  color: #f5e8c4;
+  background: linear-gradient(180deg, #134542 0%, var(--teal-dark) 100%);
+  font-family: 'Cinzel', serif;
+  font-size: .92rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
+  box-shadow: 0 4px 10px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,220,140,.2), inset 0 -2px 4px rgba(0,0,0,.4);
+  /* sagoma a cartiglio srotolato su entrambi i lati */
+  clip-path: polygon(
+    18px 0%, calc(100% - 18px) 0%,
+    calc(100% - 8px) 30%, 100% 50%, calc(100% - 8px) 70%, calc(100% - 18px) 100%,
+    18px 100%, 8px 70%, 0% 50%, 8px 30%
+  );
+  z-index: 3;
+  border: 0;
+}
+/* stelline decorative dentro il ribbon */
+.ribbon::before, .ribbon::after {
+  content: '✦';
+  font-family: serif; font-size: .8rem;
+  color: rgba(212,160,32,.85); text-shadow: none;
+}
+/* varianti colore ribbon */
+.ribbon.red   { background: linear-gradient(180deg, #8a1f17 0%, var(--red-dark) 100%); }
+.ribbon.gold  { background: linear-gradient(180deg, #a07a10 0%, #5a4308 100%); color: #f8e8a8; }
+.ribbon.skull { background: linear-gradient(180deg, #2a1808 0%, #0a0402 100%); }
+
+/* ============================================================
+   CAMPI TESTO (input e textarea generici)
+   ============================================================ */
+.field { display: grid; gap: 4px; margin-bottom: 11px; }
+.field label {
+  color: var(--muted);
+  font-family: 'Cinzel', serif;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: .62rem;
+}
+.field input, .field textarea {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid rgba(74,42,8,.5);
+  background: transparent;
+  padding: 4px 3px;
+  color: var(--ink);
+  outline: none;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: .98rem;
+  line-height: 1.3;
+}
+.field input:focus, .field textarea:focus {
+  border-bottom-color: var(--teal);
+  background: rgba(255,250,210,.4);
+}
+/* textarea che si auto-espande: JS aggiusta l'altezza su input */
+textarea.auto-expand { resize: none; overflow: hidden; min-height: 60px; }
+
+/* ============================================================
+   RATING ROWS — riga con quadratini, nome e campo bonus
+   Layout: [quadratini] [nome] [campo +/-]
+   ============================================================ */
+.rating-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  margin: 5px 0;
+}
+.boxes { display: flex; gap: 4px; flex-shrink: 0; }
+.box {
+  width: 16px; height: 16px;
+  border: 1.5px solid rgba(74,42,8,.7);
+  background: rgba(255,250,210,.3);
+  border-radius: 1px;
+  cursor: pointer; padding: 0;
+  transition: background .12s, transform .1s;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.15);
+}
+.box:hover { transform: scale(1.08); }
+.box.on {
+  background:
+    linear-gradient(135deg, transparent 45%, rgba(255,200,100,.25) 50%, transparent 55%),
+    var(--ink);
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px rgba(180,130,20,.4), 0 1px 2px rgba(0,0,0,.3);
+}
+.rating-label {
+  font-family: 'IM Fell English', serif;
+  font-size: .9rem;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* piccolo campo per annotare bonus/modificatori (es. +1 da vantaggio) */
+.rating-bonus {
+  width: 40px;
+  border: 0;
+  border-bottom: 1px solid rgba(74,42,8,.4);
+  background: rgba(255,250,210,.35);
+  border-radius: 2px 2px 0 0;
+  padding: 2px 4px;
+  color: var(--ink);
+  font-family: Georgia, serif;
+  font-size: 1rem;
+  font-weight: 400;
+  font-style: normal;
+  text-align: center;
+  outline: none;
+}
+.rating-bonus:focus {
+  background: rgba(255,250,210,.65);
+  border-bottom-color: var(--teal);
+}
+.rating-bonus::placeholder { color: rgba(74,42,8,.4); font-size: .8rem; }
+
+/* griglia singola colonna per tratti e abilità */
+.traits-grid, .skills-grid { display: grid; }
+
+/* ============================================================
+   MONETE — tracker della ricchezza (I–V)
+   ============================================================ */
+.coins { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 10px 0 0; }
+.coin {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  border: 2px solid #6a4408;
+  background: radial-gradient(circle at 35% 30%, #fff0b8 0%, #e8b53a 40%, #a87014 70%, #6a4408 100%);
+  color: #2a1800;
+  font-family: 'Cinzel', serif;
+  font-size: .8rem; font-weight: 700;
+  display: grid; place-items: center;
+  cursor: pointer;
+  box-shadow: inset 0 2px 4px rgba(255,255,180,.55), inset 0 -2px 4px rgba(80,40,5,.4), 0 4px 8px rgba(0,0,0,.3);
+  opacity: .35; filter: grayscale(.4);
+  transition: opacity .15s, transform .12s, filter .15s;
+}
+.coin.on {
+  opacity: 1; filter: none;
+  transform: translateY(-2px) rotate(-3deg);
+  box-shadow: inset 0 2px 4px rgba(255,255,180,.6), inset 0 -2px 4px rgba(80,40,5,.4), 0 6px 12px rgba(0,0,0,.4);
+}
+
+/* Arcani: virtù e hubris affiancate */
+.arcani { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.arcani textarea { min-height: 70px; }
+
+/* ============================================================
+   SPIRALE DELLA MORTE — SVG interattiva
+   ============================================================ */
+.spiral-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.spiral-svg {
+  width: 100%; max-width: 290px; height: auto;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.2));
+}
+
+/* casella normale */
+.sp-cell { cursor: pointer; }
+.sp-cell circle {
+  fill: rgba(255,245,200,.7);
+  stroke: rgba(74,42,8,.75);
+  stroke-width: 1.5;
+  transition: fill .15s;
+}
+.sp-cell text {
+  fill: #2c1a06;
+  font-family: 'Cinzel', serif;
+  font-size: 9px; font-weight: 700;
+  pointer-events: none;
+  dominant-baseline: central; text-anchor: middle;
+}
+.sp-cell:hover circle { fill: rgba(180,130,20,.4); }
+
+/* casella segnata (danno normale) */
+.sp-cell.on circle { fill: var(--ink); stroke: var(--burn); }
+.sp-cell.on text   { fill: #f0d088; }
+
+/* casella teschio (ferita drammatica) — sfondo oro quando vuota */
+.sp-cell.skull circle { fill: #d49010; stroke: #6a4408; stroke-width: 2; }
+.sp-cell.skull text { fill: #1a0800; font-size: 13px; }
+
+/* casella teschio segnata — diventa rossa come la ceralacca */
+.sp-cell.skull.on circle { fill: var(--wax); stroke: var(--red-dark); stroke-width: 2; }
+.sp-cell.skull.on text   { fill: #f5d4c8; font-size: 13px; }
+
+/* pulsante per azzerare la spirale — long-press 3s */
+.btn-reset-spiral {
+  margin-top: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  border: 1px dashed rgba(122,26,20,.5); border-radius: 3px;
+  background: transparent; color: var(--red); cursor: pointer;
+  padding: 5px 12px;
+  font-family: 'Cinzel', serif; font-size: .65rem;
+  letter-spacing: .12em; text-transform: uppercase;
+  width: 100%; position: relative; overflow: hidden; user-select: none;
+}
+.btn-reset-spiral:hover { background: rgba(122,26,20,.07); }
+.btn-reset-spiral::after {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  height: 2px; width: var(--sp-progress, 0%); background: var(--red);
+}
+.btn-reset-spiral.pressing { background: rgba(122,26,20,.1); }
+
+/* ── Righe descrittive delle ferite drammatiche ── */
+.spiral-levels {
+  width: 100%;
+  border-top: 1px solid rgba(140,100,40,.45);
+  padding-top: 8px; margin-top: 4px;
+}
+.spiral-level-row {
+  display: grid;
+  grid-template-columns: 78px 1fr;
+  gap: 5px; align-items: baseline;
+  padding: 3px 0; font-size: .78rem;
+}
+.spiral-level-row strong {
+  font-family: 'Cinzel', serif; color: var(--red);
+  font-size: .68rem; text-transform: uppercase; letter-spacing: .06em;
+}
+.spiral-level-row span { color: var(--ink-mid); }
+
+/* buff attivo (teschio 1 e 3) — verde */
+.spiral-level-row.active { background: rgba(40,120,60,.15); border-radius: 2px; padding-left: 5px; margin-left: -5px; }
+.spiral-level-row.active strong { color: #2a6e3a; }
+.spiral-level-row.active span   { color: #1a5028; }
+
+/* malus attivo (teschio 2 e 4) — rosso */
+.spiral-level-row.active-bad { background: rgba(120,30,20,.15); border-radius: 2px; padding-left: 5px; margin-left: -5px; }
+.spiral-level-row.active-bad strong { color: #8a1e14; }
+.spiral-level-row.active-bad span   { color: #6a1a10; }
+
+/* ============================================================
+   PUNTI EROE — contatore grande centrale
+   ============================================================ */
+.points-control { display: flex; gap: 16px; align-items: center; justify-content: center; margin: 6px 0; }
+.points-value {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 2.6rem; min-width: 60px;
+  text-align: center; line-height: 1;
+  color: var(--ink);
+  text-shadow: 1px 1px 0 rgba(180,130,20,.4), 2px 2px 0 rgba(80,40,5,.2);
+}
+
+/* ============================================================
+   VANTAGGI E STORIE — card dinamiche con long-press delete
+   ============================================================ */
+.vantaggi-list, .storie-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 10px; }
+
+/* card singola vantaggio/storia */
+.vantaggio-card, .storia-card {
+  border: 1px solid rgba(74,42,8,.4); border-radius: 2px;
+  background: rgba(255,250,220,.4); overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+
+/* header con nome (bold) e pulsante elimina */
+.vantaggio-header, .storia-header {
+  display: grid; grid-template-columns: 1fr auto;
+  align-items: center; gap: 4px;
+  padding: 6px 8px 5px;
+  border-bottom: 1px solid rgba(74,42,8,.25);
+  background: linear-gradient(180deg, rgba(180,130,20,.18), rgba(180,130,20,.08));
+}
+.vantaggio-nome, .storia-titolo {
+  border: 0; background: transparent; padding: 2px;
+  color: var(--ink); outline: none;
+  font-family: 'Cinzel', serif; font-size: .82rem;
+  font-weight: 700; letter-spacing: .04em; width: 100%;
+}
+.vantaggio-nome::placeholder, .storia-titolo::placeholder { color: rgba(74,42,8,.45); font-weight: 400; }
+.vantaggio-nome:focus, .storia-titolo:focus { background: rgba(255,250,210,.4); }
+
+/* textarea descrizione vantaggio */
+.vantaggio-desc {
+  display: block; width: 100%; border: 0; background: transparent;
+  padding: 7px 9px; color: var(--ink-mid); outline: none;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: .9rem; line-height: 1.45;
+  resize: vertical; min-height: 56px;
+}
+.vantaggio-desc::placeholder { color: rgba(74,42,8,.4); font-style: italic; }
+.vantaggio-desc:focus { background: rgba(255,250,210,.3); }
+
+/* pulsante elimina — long-press 3s con barra di progresso ::after */
+.btn-del {
+  width: 22px; height: 22px;
+  border: 1px solid rgba(120,30,20,.35); border-radius: 2px;
+  background: transparent; color: var(--red); cursor: pointer;
+  font-size: .78rem; line-height: 1;
+  display: grid; place-items: center;
+  padding: 0; flex-shrink: 0;
+  position: relative; overflow: hidden; user-select: none;
+}
+.btn-del::after {
+  content: ''; position: absolute; bottom: 0; left: 0;
+  height: 3px; width: var(--progress, 0%); background: var(--red);
+}
+.btn-del.pressing { background: rgba(120,30,20,.1); }
+.btn-del:hover    { background: rgba(120,30,20,.08); }
+
+/* pulsanti aggiungi vantaggio / storia */
+.btn-add-vantaggio, .btn-add-storia {
+  display: flex; align-items: center; gap: 7px;
+  border: 1px dashed rgba(74,42,8,.5); border-radius: 3px;
+  background: transparent; color: var(--muted); cursor: pointer;
+  padding: 7px 12px;
+  font-family: 'Cinzel', serif; font-size: .68rem;
+  letter-spacing: .12em; text-transform: uppercase;
+  width: 100%;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.btn-add-vantaggio:hover, .btn-add-storia:hover { background: rgba(14,77,74,.07); color: var(--teal); border-color: var(--teal); }
+.btn-add-vantaggio::before, .btn-add-storia::before {
+  content: '+'; font-size: 1.1rem; font-family: Georgia, serif; line-height: 1;
+}
+
+/* corpo della storia (sotto il titolo) */
+.storia-body { padding: 9px 11px; display: grid; gap: 8px; }
+.storia-field { display: grid; gap: 2px; }
+.storia-field label {
+  color: var(--muted); font-family: 'Cinzel', serif;
+  text-transform: uppercase; letter-spacing: .14em; font-size: .6rem;
+}
+.storia-field input, .storia-field textarea {
+  width: 100%; border: 0;
+  border-bottom: 1px solid rgba(74,42,8,.4);
+  background: transparent; padding: 3px 2px;
+  color: var(--ink); outline: none;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: .92rem; line-height: 1.35;
+}
+.storia-field textarea { resize: none; overflow: hidden; min-height: 50px; }
+.storia-field input:focus, .storia-field textarea:focus {
+  border-bottom-color: var(--teal); background: rgba(255,250,210,.3);
+}
+
+/* ============================================================
+   UTILITY VARIE
+   ============================================================ */
+
+/* testo di aiuto / note regole in fondo alle card */
+.help {
+  color: var(--ink); font-size: .88rem; line-height: 1.6;
+  margin-top: 8px; font-style: normal;
+}
+.help strong {
+  font-style: normal; font-family: 'Cinzel', serif;
+  font-size: .75rem; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--teal);
+}
+
+/* input file nascosto (usato da "Importa JSON") */
+.hidden-file { display: none; }
+
+/* card con textarea lunga (Background) */
+.long-lines textarea { min-height: 320px; }
+#background { min-height: 320px; font-family: 'IM Fell English', Georgia, serif; font-size: .98rem; line-height: 1.5; }
+
+/* separatore ornamentale */
+.ornament {
+  text-align: center; color: var(--gold);
+  font-size: .9rem; letter-spacing: .35em;
+  margin: 10px 0 12px; opacity: .65;
+}
+
+/* ============================================================
+   RESPONSIVE — adatta la griglia agli schermi più stretti
+   ============================================================ */
+@media (max-width: 980px) {
+  .topbar { grid-template-columns: 1fr; }
+  .actions { justify-content: flex-start; }
+  .sheet { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 680px) {
+  .sheet { grid-template-columns: 1fr; }
+  .arcani { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   STAMPA — layout semplificato per PDF / carta
+   ============================================================ */
+@media print {
+  body { background: white; }
+  .topbar { display: none; }
+  .app-shell { width: 100%; padding: 0; }
+  .sheet { grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .card { box-shadow: none; break-inside: avoid; border: 1px solid #aaa; filter: none; }
+  .btn { display: none; }
+}
